@@ -17,7 +17,7 @@ RewriteRule ^directors$/(\d+)$ ./Controller/DirectorController.php?id=$1 [NC,L,Q
 RewriteRule ^movies/(\d+)/directors$ ./Controller/DirectorController.php?id=$1&parent=movies [NC,L,QSA]
 
 RewriteRule ^genres$ ./Controller/GenreController.php [NC,L,QSA]
-RewriteRule ^genres$/(\d+)$ ./Controller/GenreController.php?id=$1 [NC,L,QSA]
+RewriteRule ^genres/(\d+)$ ./Controller/GenreController.php?id=$1 [NC,L,QSA]
 RewriteRule ^movies/(\d+)/genres$ ./Controller/GenreController.php?id=$1&parent=movies [NC,L,QSA]
 
 RewriteRule ^reviews$ ./Controller/ReviewController.php [NC,L,QSA]
