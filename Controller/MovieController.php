@@ -10,16 +10,28 @@ $id = $_GET['id'] ?? null;
     switch ($requestMethod) {
         case 'GET':
             if($id) {
-                $movie = getMovieById($id);
-                if($movie) {
+                if(preg_match("/movies\/\d+/", $_SERVER['REQUEST_URI'])) {
+                    $movie = getMovieById($id);
+                    if($movie) {
 
-                    http_response_code(200);
-                    echo json_encode($movie);
+                        http_response_code(200);
+                        echo json_encode($movie);
+                    }else{
+                        $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
+
+                        http_response_code(404);
+                        echo json_encode($error);
+                    }
                 }else{
-                    $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
-
-                    http_response_code(404);
-                    echo json_encode($error);
+                    $movies = getMoviesByActorId($id);
+                    if(!empty($movies)) {
+                        http_response_code(200);
+                        echo json_encode($movies);
+                    }else{
+                        $error = ['code' => 404, 'message' => "Aucun film trouvé pour cet acteur"];
+                        http_response_code(404);
+                        echo json_encode($error);
+                    }
                 }
             }else{
                 $movies = getAllMovies();
@@ -27,6 +39,24 @@ $id = $_GET['id'] ?? null;
                 echo json_encode($movies);
             }
             break;
+            // if($id) {
+            //     $movie = getMovieById($id);
+            //     if($movie) {
+
+            //         http_response_code(200);
+            //         echo json_encode($movie);
+            //     }else{
+            //         $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
+
+            //         http_response_code(404);
+            //         echo json_encode($error);
+            //     }
+            // }else{
+            //     $movies = getAllMovies();
+            //     http_response_code(200);
+            //     echo json_encode($movies);
+            // }
+            // break;
             case "POST":
                 $data = json_decode(file_get_contents('php://input'));
                 if (!isset($data->title, $data->releasedate, $data->plot, $data->runtime)) {
