@@ -11,16 +11,27 @@ $id = $_GET['id'] ?? null;
 switch ($requestMethod) {
     case 'GET':
         if($id) {
-            $actor = getActorById($id);
-            if($actor) {
+            if(preg_match("/actors\/\d+/", $_SERVER['REQUEST_URI'])) {
+                $actor = getActorById($id);
+                if($actor) {
 
-                http_response_code(200);
-                echo json_encode($actor);
+                    http_response_code(200);
+                    echo json_encode($actor);
+                }else{
+                    $error = ['code' => 404, 'message' => "L'acteur avec l'identifiant $id n'existe pas" ,];
+                    http_response_code(404);
+                    echo json_encode($error);
+                }
             }else{
-                $error = ['code' => 404, 'message' => "L'acteur avec l'identifiant $id n'existe pas" ,];
-
-                http_response_code(404);
-                echo json_encode($error);
+                $actors = getActorsByMovieId($id);
+                if(!empty($actors)) {
+                    http_response_code(200);
+                    echo json_encode($actors);
+                }else{
+                    $error = ['code' => 404, 'message' => "Aucun acteur trouvé pour ce film"];
+                    http_response_code(404);
+                    echo json_encode($error);
+                }
             }
         }else{
             $actors = getAllActors();
@@ -28,7 +39,7 @@ switch ($requestMethod) {
             echo json_encode($actors);
         }
         break;
-    
+
     case "POST":
         $data = json_decode(file_get_contents('php://input'));
         if (!isset($data->firstname, $data->lastname, $data->dob, $data->bio)) {
@@ -76,10 +87,29 @@ switch ($requestMethod) {
             echo json_encode($error);
         }
         break;
-
     default:
         http_response_code(405);
         $error = ['error' => 405, 'message' => 'Méthode non autorisée'];
         echo json_encode($error);
         break;
 }
+
+// case "GET":
+//     if($id) {
+//         $actors = getActorsByMovieId($id);
+//         if($actors) {
+//             http_response_code(200);
+//             echo json_encode($actors);
+//         }else{
+//             $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
+
+//             http_response_code(404);
+//             echo json_encode($error);
+//         }
+//     }else{
+//         $error = ['code' => 400, 'message' => "Veuillez renseigner l'identifiant du film" ,];
+
+//         http_response_code(400);
+//         echo json_encode($error);
+//     }
+//     break;
