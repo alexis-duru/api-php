@@ -93,23 +93,3 @@ switch ($requestMethod) {
         echo json_encode($error);
         break;
 }
-
-// case "GET":
-//     if($id) {
-//         $actors = getActorsByMovieId($id);
-//         if($actors) {
-//             http_response_code(200);
-//             echo json_encode($actors);
-//         }else{
-//             $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
-
-//             http_response_code(404);
-//             echo json_encode($error);
-//         }
-//     }else{
-//         $error = ['code' => 400, 'message' => "Veuillez renseigner l'identifiant du film" ,];
-
-//         http_response_code(400);
-//         echo json_encode($error);
-//     }
-//     break;

@@ -39,24 +39,6 @@ $id = $_GET['id'] ?? null;
                 echo json_encode($movies);
             }
             break;
-            // if($id) {
-            //     $movie = getMovieById($id);
-            //     if($movie) {
-
-            //         http_response_code(200);
-            //         echo json_encode($movie);
-            //     }else{
-            //         $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
-
-            //         http_response_code(404);
-            //         echo json_encode($error);
-            //     }
-            // }else{
-            //     $movies = getAllMovies();
-            //     http_response_code(200);
-            //     echo json_encode($movies);
-            // }
-            // break;
             case "POST":
                 $data = json_decode(file_get_contents('php://input'));
                 if (!isset($data->title, $data->releasedate, $data->plot, $data->runtime)) {

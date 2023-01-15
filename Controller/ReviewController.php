@@ -47,23 +47,6 @@ switch ($requestMethod) {
             echo json_encode($reviews);
         }
         break;
-    //         $review = getReviewById($id);
-    //         if($review) {
-
-    //             http_response_code(200);
-    //             echo json_encode($review);
-    //         }else{
-    //             $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
-
-    //             http_response_code(404);
-    //             echo json_encode($error);
-    //         }
-    //     }else{
-    //         $reviews = getAllReviews();
-    //         http_response_code(200);
-    //         echo json_encode($reviews);
-    //     }
-    //     break;
     case 'POST':
         $data = json_decode(file_get_contents('php://input'));
         if(!isset($data->movie_id) || !isset($data->username) || !isset($data->content) || !isset($data->date)) {

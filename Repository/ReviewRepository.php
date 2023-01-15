@@ -76,10 +76,7 @@ function deleteReview(int $id){
 }
 
 function getReviewsByMovieId(int $id):array {
-
     require '../Service/Database.php';
-    
-    // $sql = "SELECT movies.id, movies.title, movies.release_date, movies.plot, movies.runtime FROM movies JOIN movie_actors ON movies.id = movie_actors.movie_id JOIN actors ON actors.id = movie_actors.actor_id WHERE actors.id = :id";
 
     $sql = "SELECT reviews.id, reviews.movie_id, reviews.username, reviews.content, reviews.date FROM reviews JOIN movies ON movies.id = reviews.movie_id WHERE movies.id = :id ORDER BY reviews.date DESC";
 
