@@ -9,18 +9,37 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 $id = $_GET['id'] ?? null;
 
 switch ($requestMethod) {
+    
     case 'GET':
         if($id) {
-            $review = getReviewById($id);
-            if($review) {
-
-                http_response_code(200);
-                echo json_encode($review);
+            if($id) {
+                if(preg_match("/reviews\/\d+/", $_SERVER['REQUEST_URI'])) {
+                    $review = getReviewById($id);
+                    if($review) {
+    
+                        http_response_code(200);
+                        echo json_encode($review);
+                    }else{
+                        $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
+    
+                        http_response_code(404);
+                        echo json_encode($error);
+                    }
+                }else{
+                    $reviews = getReviewsByMovieId($id);
+                    if(!empty($reviews)) {
+                        http_response_code(200);
+                        echo json_encode($reviews);
+                    }else{
+                        $error = ['code' => 404, 'message' => "Aucun article trouvé pour ce film"];
+                        http_response_code(404);
+                        echo json_encode($error);
+                    }
+                }
             }else{
-                $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
-
-                http_response_code(404);
-                echo json_encode($error);
+                $reviews = getAllReviews();
+                http_response_code(200);
+                echo json_encode($reviews);
             }
         }else{
             $reviews = getAllReviews();
@@ -28,6 +47,23 @@ switch ($requestMethod) {
             echo json_encode($reviews);
         }
         break;
+    //         $review = getReviewById($id);
+    //         if($review) {
+
+    //             http_response_code(200);
+    //             echo json_encode($review);
+    //         }else{
+    //             $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
+
+    //             http_response_code(404);
+    //             echo json_encode($error);
+    //         }
+    //     }else{
+    //         $reviews = getAllReviews();
+    //         http_response_code(200);
+    //         echo json_encode($reviews);
+    //     }
+    //     break;
     case 'POST':
         $data = json_decode(file_get_contents('php://input'));
         if(!isset($data->movie_id) || !isset($data->username) || !isset($data->content) || !isset($data->date)) {
