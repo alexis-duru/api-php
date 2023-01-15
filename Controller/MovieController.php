@@ -34,7 +34,6 @@ $id = $_GET['id'] ?? null;
                     $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
                     echo json_encode($error);
                 } else {
-                    // Valider les données avant d'insérer
                     $movie = createMovie($data->title, $data->releasedate, $data->plot, $data->runtime);
                     http_response_code(201);
                     echo json_encode($movie);
@@ -48,7 +47,6 @@ $id = $_GET['id'] ?? null;
                     $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
                     echo json_encode($error);
                 } else {
-                    // Valider les données avant d'insérer
                     $movie = updateMovie($id, $data->title, $data->releasedate, $data->plot, $data->runtime);
                     http_response_code(200);
                     echo json_encode($movie);
@@ -60,8 +58,6 @@ $id = $_GET['id'] ?? null;
                     $movie = getMovieById($id);
                     if($movie) {
                         deleteMovie($id);
-
-                        // ecrire un message pour signifier que le message a bien été supprimé
                         $message = ['code' => 200, 'message' => "Le film avec l'identifiant $id a bien été supprimé" ,];
                         http_response_code(200);
                         echo json_encode($message);
