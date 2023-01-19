@@ -78,12 +78,11 @@ function getDirectorsByMovieId(int $id):array {
 
     require '../Service/Database.php';
     
-    $sql = "SELECT * FROM directors
+    $sql = "SELECT directors.id, first_name, last_name, dob, bio, movies.id as movie_id FROM directors
     JOIN movie_directors ON directors.id = movie_directors.director_id
     JOIN movies ON movies.id = movie_directors.movie_id
     WHERE movies.id = :id";
 
-    
     $getDirectorsStmt = $db->prepare($sql);
     $getDirectorsStmt->bindParam(':id', $id);
     $getDirectorsStmt->execute();
@@ -95,7 +94,7 @@ function getMoviesByDirectorId(int $id):array {
 
     require '../Service/Database.php';
     
-    $sql = "SELECT * FROM movies
+    $sql = "SELECT movies.id, title, release_date, plot, runtime, directors.id as director_id FROM movies
     JOIN movie_directors ON movies.id = movie_directors.movie_id
     JOIN directors ON directors.id = movie_directors.director_id
     WHERE directors.id = :id";

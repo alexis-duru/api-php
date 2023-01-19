@@ -14,12 +14,10 @@ switch ($requestMethod) {
             if(preg_match("/genres\/\d+/", $_SERVER['REQUEST_URI'])) {
                 $genre = getGenreById($id);
                 if($genre) {
-
                     http_response_code(200);
                     echo json_encode($genre);
                 }else{
                     $error = ['code' => 404, 'message' => "Le genre avec l'identifiant $id n'existe pas" ,];
-
                     http_response_code(404);
                     echo json_encode($error);
                 }
@@ -28,16 +26,6 @@ switch ($requestMethod) {
                 if(!empty($genres)) {
                     http_response_code(200);
                     echo json_encode($genres);
-                }else{
-                    $error = ['code' => 404, 'message' => "Aucun film trouvé pour ce genre"];
-                    http_response_code(404);
-                    echo json_encode($error);
-                }
-            }if(preg_match("/genres\/\d+\/movies/", $_SERVER['REQUEST_URI'])) {
-                $movies = getMoviesByGenreId($id);
-                if(!empty($movies)) {
-                    http_response_code(200);
-                    echo json_encode($movies);
                 }else{
                     $error = ['code' => 404, 'message' => "Aucun film trouvé pour ce genre"];
                     http_response_code(404);
@@ -79,19 +67,16 @@ switch ($requestMethod) {
             $genre = getGenreById($id);
             if($genre) {
                 deleteGenre($id);
-
                 $message = ['code' => 200, 'message' => "Le genre numéro $id a été supprimé" ,];
                 http_response_code(200);
                 echo json_encode($message);
             }else{
                 $error = ['code' => 404, 'message' => "Le genre numéro $id n'existe pas" ,];
-
                 http_response_code(404);
                 echo json_encode($error);
             }
         }else{
             $error = ['code' => 400, 'message' => "L'identifiant du genre est obligatoire"];
-
             http_response_code(400);
             echo json_encode($error);
         }
@@ -100,5 +85,5 @@ switch ($requestMethod) {
         http_response_code(405);
         $error = ['code' => 405, 'message' => "La méthode $requestMethod n'est pas autorisée"];
         echo json_encode($error);
-        break;
+    break;
 }

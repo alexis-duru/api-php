@@ -47,11 +47,12 @@ function createActor ($firstname, $lastname, $dob, $bio): array{
     return getActorById($lastId);
 }
 
-function updateActor($id, $firstname, $lastname, $dob, $bio): array{
+function updateActor(int $id, $firstname, $lastname, $dob, $bio): array{
     require '../Service/Database.php';
 
     $sql = "UPDATE actors SET first_name = :firstname, last_name = :lastname, dob = :dob, bio = :bio WHERE id = :id";
-    $updateActorStmt = $db->prepare($sql);
+
+    $updateActorStmt =  $db->prepare($sql);
     $updateActorStmt->execute([
         'id' => $id,
         'firstname' => $firstname,
@@ -61,7 +62,6 @@ function updateActor($id, $firstname, $lastname, $dob, $bio): array{
     ]);
 
     return getActorById($id);
-
 }
 
 function deleteActor(int $id){
@@ -78,7 +78,7 @@ function getActorsByMovieId(int $id):array {
 
     require '../Service/Database.php';
     
-    $sql = "SELECT actors.id FROM actors
+    $sql = "SELECT actors.id, first_name, last_name, dob, bio, movies.id as movie_id FROM actors
     JOIN movie_actors ON actors.id = movie_actors.actor_id
     JOIN movies ON movies.id = movie_actors.movie_id
     WHERE movies.id = :id";
@@ -90,11 +90,12 @@ function getActorsByMovieId(int $id):array {
     return  $getActorsByMovieIdStmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
 function getMoviesByActorId(int $id):array {
 
     require '../Service/Database.php';
-    
-    $sql = "SELECT * FROM movies
+
+    $sql = "SELECT movies.id, title, release_date, plot, runtime, actors.id as actor_id FROM movies
     JOIN movie_actors ON movies.id = movie_actors.movie_id
     JOIN actors ON actors.id = movie_actors.actor_id
     WHERE actors.id = :id";
@@ -105,5 +106,3 @@ function getMoviesByActorId(int $id):array {
 
     return  $getMoviesByActorIdStmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
-

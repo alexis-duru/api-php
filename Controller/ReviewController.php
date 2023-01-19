@@ -9,19 +9,16 @@ $requestMethod = $_SERVER['REQUEST_METHOD'];
 $id = $_GET['id'] ?? null;
 
 switch ($requestMethod) {
-    
     case 'GET':
         if($id) {
             if($id) {
                 if(preg_match("/reviews\/\d+/", $_SERVER['REQUEST_URI'])) {
                     $review = getReviewById($id);
                     if($review) {
-    
                         http_response_code(200);
                         echo json_encode($review);
                     }else{
                         $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
-    
                         http_response_code(404);
                         echo json_encode($error);
                     }
@@ -46,7 +43,7 @@ switch ($requestMethod) {
             http_response_code(200);
             echo json_encode($reviews);
         }
-        break;
+    break;
     case 'POST':
         $data = json_decode(file_get_contents('php://input'));
         if(!isset($data->movie_id) || !isset($data->username) || !isset($data->content) || !isset($data->date)) {
@@ -58,7 +55,7 @@ switch ($requestMethod) {
             http_response_code(201);
             echo json_encode($review);
         }
-        break;
+    break;
     case 'PUT':
         $data = json_decode(file_get_contents('php://input'));
         if(!isset($data->movie_id) || !isset($data->username) || !isset($data->content) || !isset($data->date)) {
@@ -70,19 +67,17 @@ switch ($requestMethod) {
             http_response_code(200);
             echo json_encode($review);
         }
-        break;
+    break;
     case 'DELETE':
         if($id) {
             $review = getReviewById($id);
             if($review) {
                 deleteReview($id);
-
                 $message = ['code' => 200, 'message' => "L'article avec l'identifiant $id a été supprimé" ,];
                 http_response_code(200);
                 echo json_encode($message);
             }else{
                 $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
-
                 http_response_code(404);
                 echo json_encode($error);
             }
@@ -91,10 +86,10 @@ switch ($requestMethod) {
             http_response_code(400);
             echo json_encode($error);
         }
-        break;
+    break;
     default:
         http_response_code(405);
         $error = ['code' => 405, 'message' => "La méthode $requestMethod n'est pas autorisée"];
         echo json_encode($error);
-        break;
+    break;
 }

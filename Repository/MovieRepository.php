@@ -75,19 +75,4 @@ function deleteMovie(int $id){
         'id' => $id
     ]);
 }
-
-function getMoviesByActorId(int $id):array {
-
-    require '../Service/Database.php';
-
-    $sql = "SELECT movies.id, movies.title, movies.release_date, movies.plot, movies.runtime FROM movies JOIN movie_actors ON movies.id = movie_actors.movie_id JOIN actors ON actors.id = movie_actors.actor_id WHERE actors.id = :id";
-
-    $getMoviesByActorIdStmt = $db->prepare($sql);
-    $getMoviesByActorIdStmt->bindParam(':id', $id);
-    $getMoviesByActorIdStmt->execute();
-
-    return  $getMoviesByActorIdStmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
 ?>

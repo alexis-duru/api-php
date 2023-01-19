@@ -86,5 +86,4 @@ function getReviewsByMovieId(int $id):array {
 
     return  $getReviewsStmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
 ?>
