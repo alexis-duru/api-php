@@ -73,3 +73,37 @@ function deleteDirector(int $id){
         'id' => $id
     ]);
 }
+
+function getDirectorsByMovieId(int $id):array {
+
+    require '../Service/Database.php';
+    
+    $sql = "SELECT * FROM directors
+    JOIN movie_directors ON directors.id = movie_directors.director_id
+    JOIN movies ON movies.id = movie_directors.movie_id
+    WHERE movies.id = :id";
+
+    
+    $getDirectorsStmt = $db->prepare($sql);
+    $getDirectorsStmt->bindParam(':id', $id);
+    $getDirectorsStmt->execute();
+
+    return  $getDirectorsStmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getMoviesByDirectorId(int $id):array {
+
+    require '../Service/Database.php';
+    
+    $sql = "SELECT * FROM movies
+    JOIN movie_directors ON movies.id = movie_directors.movie_id
+    JOIN directors ON directors.id = movie_directors.director_id
+    WHERE directors.id = :id";
+
+    
+    $getMoviesStmt = $db->prepare($sql);
+    $getMoviesStmt->bindParam(':id', $id);
+    $getMoviesStmt->execute();
+
+    return  $getMoviesStmt->fetchAll(PDO::FETCH_ASSOC);
+}

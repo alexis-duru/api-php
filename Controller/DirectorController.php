@@ -11,21 +11,40 @@ $id = $_GET['id'] ?? null;
 switch ($requestMethod) {
     case 'GET':
         if($id) {
-            $director = getDirectorById($id);
-            if($director) {
+            if(preg_match("/directors\/\d+/", $_SERVER['REQUEST_URI'])) {
+                $director = getDirectorById($id);
+                if($director) {
 
-                http_response_code(200);
-                echo json_encode($director);
+                    http_response_code(200);
+                    echo json_encode($director);
+                }else{
+                    $error = ['code' => 404, 'message' => "Le réalisateur avec l'identifiant $id n'existe pas" ,];
+
+                    http_response_code(404);
+                    echo json_encode($error);
+                }
             }else{
-                $error = ['code' => 404, 'message' => "Le réalisateur avec l'identifiant $id n'existe pas" ,];
-
+                $directors = getDirectorsByMovieId($id);
+                if(!empty($directors)) {
+                    http_response_code(200);
+                    echo json_encode($directors);
+                }else{
+                    $error = ['code' => 404, 'message' => "Aucun réalisateur trouvé pour ce film"];
+                    http_response_code(404);
+                    echo json_encode($error);
+                }
+            }
+        }
+        else{
+            $directors = getAllDirectors();
+            if(!empty($directors)) {
+                http_response_code(200);
+                echo json_encode($directors);
+            }else{
+                $error = ['code' => 404, 'message' => "Aucun réalisateur trouvé"];
                 http_response_code(404);
                 echo json_encode($error);
             }
-        }else{
-            $directors = getAllDirectors();
-            http_response_code(200);
-            echo json_encode($directors);
         }
         break;
         case "POST":

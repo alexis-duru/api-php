@@ -64,10 +64,43 @@ function deleteGenre(int $id){
     require '../Service/Database.php';
 
     $sql = "DELETE FROM genres WHERE id = :id";
-    
+
     $deleteGenreStmt = $db->prepare($sql);
 
     $deleteGenreStmt->execute([
         'id' => $id
     ]);
+}
+
+function getGenresByMovieId(int $id) {
+    require '../Service/Database.php';
+
+    $sql = "SELECT * FROM genres
+    JOIN movie_genres ON genres.id = movie_genres.genre_id
+    JOIN movies ON movies.id = movie_genres.movie_id
+    WHERE movies.id = :id";
+
+
+    $getGenreByMovieIdStmt = $db->prepare($sql);
+    $getGenreByMovieIdStmt->bindParam(':id', $id);
+    $getGenreByMovieIdStmt->execute();
+
+    return $getGenreByMovieIdStmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getMovieByGenreId(int $id):array {
+
+    require '../Service/Database.php';
+
+    $sql = "SELECT * FROM movies
+    JOIN movie_genres ON movies.id = movie_genres.movie_id
+    JOIN genres ON genres.id = movie_genres.genre_id
+    WHERE genres.id = :id";
+
+    $getMoviesByGenreIdStmt = $db->prepare($sql);
+    $getMoviesByGenreIdStmt->bindParam(':id', $id);
+    $getMoviesByGenreIdStmt->execute();
+
+    return  $getMoviesByGenreIdStmt->fetchAll(PDO::FETCH_ASSOC);
+
 }

@@ -32,7 +32,18 @@ switch ($requestMethod) {
                     http_response_code(404);
                     echo json_encode($error);
                 }
+            }if (preg_match("/actors\/\d+\/movies/", $_SERVER['REQUEST_URI'])) {
+                $movies = getMoviesByActorId($id);
+                if(!empty($movies)) {
+                    http_response_code(200);
+                    echo json_encode($movies);
+                }else{
+                    $error = ['code' => 404, 'message' => "Aucun film trouvé pour cet acteur"];
+                    http_response_code(404);
+                    echo json_encode($error);
+                }
             }
+
         }else{
             $actors = getAllActors();
             http_response_code(200);
