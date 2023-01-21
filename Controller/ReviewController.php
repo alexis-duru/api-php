@@ -62,11 +62,26 @@ switch ($requestMethod) {
             http_response_code(400);
             $error = ['code' => 400, 'message' => "Les champs 'movie_id , username , content , date' sont obligatoires"];
             echo json_encode($error);
-        }else{
-            $review = updateReview($id, $data->movie_id, $data->username, $data->content, $data->date);
-            http_response_code(200);
-            echo json_encode($review);
         }
+        if($id) {
+            $review = getReviewById($id);
+            if($review) {
+                $review = updateReview($id, $data->movie_id, $data->username, $data->content, $data->date);
+                $message = ['code' => 200, 'message' => "L'article avec l'identifiant $id a été modifié"];
+                http_response_code(200);
+                echo json_encode($message + $review);
+            }else{
+                $error = ['code' => 404, 'message' => "L'article avec l'identifiant $id n'existe pas" ,];
+                http_response_code(404);
+                echo json_encode($error);
+            }
+        }else{
+            $error = ['code' => 400, 'message' => "L'identifiant de l'article est obligatoire"];
+            http_response_code(400);
+            echo json_encode($error);
+        }
+            
+        
     break;
     case 'DELETE':
         if($id) {

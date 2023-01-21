@@ -34,8 +34,14 @@ switch ($requestMethod) {
             }
         }else{
             $genres = getAllGenres();
-            http_response_code(200);
-            echo json_encode($genres);
+            if(!empty($genres) && $genres) {
+                http_response_code(200);
+                echo json_encode($genres);
+            }else{
+                $error = ['code' => 404, 'message' => "Aucun genre trouvé"];
+                http_response_code(404);
+                echo json_encode($error);
+            }
         }
         break;
     case 'POST':
@@ -56,10 +62,23 @@ switch ($requestMethod) {
             http_response_code(400);
             $error = ['code' => 400, 'message' => "Le champ 'name' est obligatoire"];
             echo json_encode($error);
+        }
+        if($id) {
+            $genre = getGenreById($id);
+            if($genre) {
+                $genre = updateGenre($id, $data->name);
+                $message = ['code' => 200, 'message' => "Le genre numéro $id a été modifié"];
+                http_response_code(200);
+                echo json_encode($genre + $message);
+            }else{
+                $error = ['code' => 404, 'message' => "Le genre numéro $id n'existe pas"];
+                http_response_code(404);
+                echo json_encode($error);
+            }
         }else{
-            $genre = updateGenre($id, $data->name);
-            http_response_code(200);
-            echo json_encode($genre);
+            $error = ['code' => 400, 'message' => "L'identifiant du genre est obligatoire"];
+            http_response_code(400);
+            echo json_encode($error);
         }
         break;
     case 'DELETE':
@@ -67,11 +86,11 @@ switch ($requestMethod) {
             $genre = getGenreById($id);
             if($genre) {
                 deleteGenre($id);
-                $message = ['code' => 200, 'message' => "Le genre numéro $id a été supprimé" ,];
+                $message = ['code' => 200, 'message' => "Le genre numéro $id a été supprimé"];
                 http_response_code(200);
                 echo json_encode($message);
             }else{
-                $error = ['code' => 404, 'message' => "Le genre numéro $id n'existe pas" ,];
+                $error = ['code' => 404, 'message' => "Le genre numéro $id n'existe pas"];
                 http_response_code(404);
                 echo json_encode($error);
             }

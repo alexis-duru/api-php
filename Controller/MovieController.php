@@ -81,12 +81,12 @@ switch ($requestMethod) {
         $data = json_decode(file_get_contents('php://input'));
         if (!isset($data->title, $data->releasedate, $data->plot, $data->runtime)) {
             http_response_code(400);
-            $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
+            $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs ou inscrire des valeurs valides'];
             echo json_encode($error);
         } else {
             $movie = updateMovie($id, $data->title, $data->releasedate, $data->plot, $data->runtime);
-            http_response_code(200);
-            echo json_encode($movie);
+            $message = ['code' => 200, 'message' => "Le film avec l'identifiant $id a bien été modifié"];
+            echo json_encode($message + $movie);
         }
     break;
 

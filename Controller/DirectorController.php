@@ -21,8 +21,7 @@ switch ($requestMethod) {
                     http_response_code(404);
                     echo json_encode($error);
                 }
-            }
-            else{
+            }else{
                 $directors = getDirectorsByMovieId($id);
                 if(!empty($directors)) {
                     http_response_code(200);
@@ -33,8 +32,8 @@ switch ($requestMethod) {
                     echo json_encode($error);
                 }
             }
-        }
-        else{
+           
+        }else{
             $directors = getAllDirectors();
             if(!empty($directors)) {
                 http_response_code(200);
@@ -64,31 +63,44 @@ switch ($requestMethod) {
             http_response_code(400);
             $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
             echo json_encode($error);
-        } else {
-            $director = updateDirector($id, $data->firstname, $data->lastname, $data->dob, $data->bio);
-            http_response_code(200);
-            echo json_encode($director);
+        }
+        if($id) {
+            $director = getDirectorById($id);
+            if($director) {
+                updateDirector($id, $data->firstname, $data->lastname, $data->dob, $data->bio);
+                $message = ['code' => 200, 'message' => "Le réalisateur avec l'identifiant $id a bien été modifié" ,];
+                http_response_code(200);
+                echo json_encode($message + $director);
+            }else{
+                $error = ['code' => 404, 'message' => "Le réalisateur avec l'identifiant $id n'existe pas" ,];
+                http_response_code(404);
+                echo json_encode($error);
+            }
+        }else{
+            $error = ['code' => 400, 'message' => "Veuillez renseigner l'identifiant du réalisateur à modifier" ,];
+            http_response_code(400);
+            echo json_encode($error);
         }
     break;
 
     case "DELETE":
         if($id) {
-        $director = getDirectorById($id);
-        if($director) {
-            deleteDirector($id);
-            $message = ['code' => 200, 'message' => "Le réalisateur avec l'identifiant $id a bien été supprimé" ,];
-            http_response_code(200);
-            echo json_encode($message);
+            $director = getDirectorById($id);
+            if($director) {
+                deleteDirector($id);
+                $message = ['code' => 200, 'message' => "Le réalisateur avec l'identifiant $id a bien été supprimé" ,];
+                http_response_code(200);
+                echo json_encode($message);
+            }else{
+                $error = ['code' => 404, 'message' => "Le réalisateur avec l'identifiant $id n'existe pas" ,];
+                http_response_code(404);
+                echo json_encode($error);
+            }
         }else{
-            $error = ['code' => 404, 'message' => "Le réalisateur avec l'identifiant $id n'existe pas" ,];
-            http_response_code(404);
+            $error = ['code' => 400, 'message' => "Veuillez renseigner l'identifiant du réalisateur à supprimer" ,];
+            http_response_code(400);
             echo json_encode($error);
         }
-    }else{
-        $error = ['code' => 400, 'message' => "Veuillez renseigner l'identifiant du réalisateur à supprimer" ,];
-        http_response_code(400);
-        echo json_encode($error);
-    }
     break;
     default:
         http_response_code(405);

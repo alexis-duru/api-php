@@ -58,21 +58,23 @@ switch ($requestMethod) {
             http_response_code(400);
             $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
             echo json_encode($error);
-        } else {
-            if ($id) {
-                $actor = getActorById($id);
-                if(!$actor){
-                    http_response_code(404);
-                    echo json_encode(['code' => 404, 'message' => "L'acteur avec l'id $id n'existe pas"]);
-                    return;
-                }
+        }
+        if($id) {
+            $actor = getActorById($id);
+            if($actor) {
                 $actor = updateActor($id, $data->firstname, $data->lastname, $data->dob, $data->bio);
+                $message = ['code' => 200, 'message' => "L'acteur avec l'identifiant $id a bien été modifié" ,];
                 http_response_code(200);
-                echo json_encode($actor);
-            } else {
-                $error = ['error' => 400, 'message' => "Veuillez renseigner l'id de l'acteur à modifier"];
+                echo json_encode($actor + $message);
+            }else{
+                $error = ['code' => 404, 'message' => "L'acteur avec l'identifiant $id n'existe pas" ,];
+                http_response_code(404);
                 echo json_encode($error);
             }
+        }else{
+            $error = ['code' => 400, 'message' => "Veuillez renseigner l'identifiant de l'acteur à modifier" ,];
+            http_response_code(400);
+            echo json_encode($error);
         }
         break;
     case "DELETE":
@@ -94,9 +96,9 @@ switch ($requestMethod) {
             echo json_encode($error);
         }
     break;
-    // default:
-    //     http_response_code(405);
-    //     $error = ['error' => 405, 'message' => 'Méthode non autorisée'];
-    //     echo json_encode($error);
-    // break;
+    default:
+        http_response_code(405);
+        $error = ['error' => 405, 'message' => 'Méthode non autorisée'];
+        echo json_encode($error);
+    break;
 }
