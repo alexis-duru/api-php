@@ -46,12 +46,36 @@ switch ($requestMethod) {
             $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
             echo json_encode($error);
         } else {
-            $actor = createActor($data->firstname, $data->lastname, $data->dob, $data->bio);
-            http_response_code(201);
-            echo json_encode($actor);
+            $firstname = filter_var($data->firstname, FILTER_SANITIZE_STRING);
+            $lastname = filter_var($data->lastname, FILTER_SANITIZE_STRING);
+            $dob = filter_var($data->dob, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^\d{4}-\d{2}-\d{2}$/")));
+            $bio = filter_var($data->bio, FILTER_SANITIZE_STRING);
+            // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $firstname)) {
+            //     http_response_code(400);
+            //     $error = ['error' => 400, 'message' => 'Le prénom ne doit contenir que des lettres'];
+            //     echo json_encode($error);
+            // }
+            // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $lastname)) {
+            //     http_response_code(400);
+            //     $error = ['error' => 400, 'message' => 'Le nom ne doit contenir que des lettres'];
+            //     echo json_encode($error);
+            // }
+            // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $bio)) {
+            //     http_response_code(400);
+            //     $error = ['error' => 400, 'message' => 'La biographie ne doit contenir que des lettres'];
+            //     echo json_encode($error);
+            // }
+            if(!$dob){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Veuillez entrer une date de naissance valide (yyyy-mm-dd)'];
+                echo json_encode($error);
+            }else{
+                $actor = createActor($firstname, $lastname, $dob, $bio);
+                http_response_code(201);
+                echo json_encode($actor);
+            }
         }
         break;
-
     case "PUT":
         $data = json_decode(file_get_contents('php://input'));
         if (!isset($data->firstname, $data->lastname, $data->dob, $data->bio)) {
@@ -62,10 +86,35 @@ switch ($requestMethod) {
         if($id) {
             $actor = getActorById($id);
             if($actor) {
-                $actor = updateActor($id, $data->firstname, $data->lastname, $data->dob, $data->bio);
-                $message = ['code' => 200, 'message' => "L'acteur avec l'identifiant $id a bien été modifié" ,];
-                http_response_code(200);
-                echo json_encode($actor + $message);
+                $firstname = filter_var($data->firstname, FILTER_SANITIZE_STRING);
+                $lastname = filter_var($data->lastname, FILTER_SANITIZE_STRING);
+                $dob = filter_var($data->dob, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^\d{4}-\d{2}-\d{2}$/")));
+                $bio = filter_var($data->bio, FILTER_SANITIZE_STRING);
+                // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $firstname)) {
+                //     http_response_code(400);
+                //     $error = ['error' => 400, 'message' => 'Le prénom ne doit contenir que des lettres'];
+                //     echo json_encode($error);
+                // }
+                // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $lastname)) {
+                //     http_response_code(400);
+                //     $error = ['error' => 400, 'message' => 'Le nom ne doit contenir que des lettres'];
+                //     echo json_encode($error);
+                // }
+                // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $bio)) {
+                //     http_response_code(400);
+                //     $error = ['error' => 400, 'message' => 'La biographie ne doit contenir que des lettres'];
+                //     echo json_encode($error);
+                // }
+                if(!$dob){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez entrer une date de naissance valide (yyyy-mm-dd)'];
+                    echo json_encode($error);
+                }else{
+                    $actor = updateActor($id, $firstname, $lastname, $dob, $bio);
+                    $message = ['code' => 200, 'message' => "L'acteur avec l'identifiant $id a bien été modifié" ,];
+                    http_response_code(200);
+                    echo json_encode($actor + $message);
+                }
             }else{
                 $error = ['code' => 404, 'message' => "L'acteur avec l'identifiant $id n'existe pas" ,];
                 http_response_code(404);

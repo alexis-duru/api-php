@@ -71,6 +71,11 @@ switch ($requestMethod) {
             $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs'];
             echo json_encode($error);
         } else {
+            $title = filter_var($data->title, FILTER_SANITIZE_STRING);
+            $releasedate = filter_var($data->releasedate, FILTER_SANITIZE_STRING);
+            $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
+            $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
+
             $movie = createMovie($data->title, $data->releasedate, $data->plot, $data->runtime);
             http_response_code(201);
             echo json_encode($movie);
@@ -84,6 +89,11 @@ switch ($requestMethod) {
             $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs ou inscrire des valeurs valides'];
             echo json_encode($error);
         } else {
+            $title = filter_var($data->title, FILTER_SANITIZE_STRING);
+            $releasedate = filter_var($data->releasedate, FILTER_SANITIZE_STRING);
+            $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
+            $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
+            
             $movie = updateMovie($id, $data->title, $data->releasedate, $data->plot, $data->runtime);
             $message = ['code' => 200, 'message' => "Le film avec l'identifiant $id a bien été modifié"];
             echo json_encode($message + $movie);

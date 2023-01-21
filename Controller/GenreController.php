@@ -51,7 +51,13 @@ switch ($requestMethod) {
             $error = ['code' => 400, 'message' => "Le champ 'name' est obligatoire"];
             echo json_encode($error);
         }else{
+            $name = filter_var($data->name, FILTER_SANITIZE_STRING);
             $genre = createGenre($data->name);
+            if(!$genre) {
+                $error = ['code' => 500, 'message' => "Une erreur est survenue lors de la création du genre"];
+                http_response_code(500);
+                echo json_encode($error);
+            }
             http_response_code(201);
             echo json_encode($genre);
         }
@@ -66,6 +72,8 @@ switch ($requestMethod) {
         if($id) {
             $genre = getGenreById($id);
             if($genre) {
+                $name = filter_var($data->name, FILTER_SANITIZE_STRING);
+
                 $genre = updateGenre($id, $data->name);
                 $message = ['code' => 200, 'message' => "Le genre numéro $id a été modifié"];
                 http_response_code(200);
