@@ -73,12 +73,21 @@ switch ($requestMethod) {
         } else {
             $title = filter_var($data->title, FILTER_SANITIZE_STRING);
             $releasedate = filter_var($data->releasedate, FILTER_SANITIZE_STRING);
+            $releasedate = filter_var($data->releasedate, FILTER_VALIDATE_INT);
             $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
             $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
-
-            $movie = createMovie($data->title, $data->releasedate, $data->plot, $data->runtime);
-            http_response_code(201);
-            echo json_encode($movie);
+            if(strlen($releasedate)!==4){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Veuillez renseigner une date de sortie valide'];
+                echo json_encode($error);
+            }else{
+                $movie = createMovie($data->title, $data->releasedate, $data->plot, $data->runtime);
+                http_response_code(201);
+                echo json_encode($movie);
+            }
+            // $movie = createMovie($data->title, $data->releasedate, $data->plot, $data->runtime);
+            // http_response_code(201);
+            // echo json_encode($movie);
         }
         break;
             
@@ -94,12 +103,19 @@ switch ($requestMethod) {
             if($movie) {
                 $title = filter_var($data->title, FILTER_SANITIZE_STRING);
                 $releasedate = filter_var($data->releasedate, FILTER_SANITIZE_STRING);
+                $releasedate = filter_var($data->releasedate, FILTER_VALIDATE_INT);
                 $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
                 $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
-                
+
+                if(strlen($releasedate)!==4){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez renseigner une date de sortie valide'];
+                    echo json_encode($error);
+                }else{
                 $movie = updateMovie($id, $data->title, $data->releasedate, $data->plot, $data->runtime);
                 $message = ['code' => 200, 'message' => "Le film avec l'identifiant $id a bien été modifié"];
                 echo json_encode($message + $movie);
+                }
             }else{
                 $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
                 http_response_code(404);

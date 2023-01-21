@@ -75,4 +75,17 @@ function deleteMovie(int $id){
         'id' => $id
     ]);
 }
+
+// function getMovieByTitle(string $title):array {
+
+//     require '../Service/Database.php';
+    
+//     $sql = "SELECT * FROM movies WHERE title LIKE :title";
+    
+//     $getMovieStmt = $db->prepare($sql);
+//     $getMovieStmt->bindParam(':title', $title);
+//     $getMovieStmt->execute();
+
+//     return  $getMovieStmt->fetchAll(PDO::FETCH_ASSOC);
+// }
 ?>
