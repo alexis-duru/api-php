@@ -88,15 +88,27 @@ switch ($requestMethod) {
             http_response_code(400);
             $error = ['error' => 400, 'message' => 'Veuillez renseigner tous les champs ou inscrire des valeurs valides'];
             echo json_encode($error);
-        } else {
-            $title = filter_var($data->title, FILTER_SANITIZE_STRING);
-            $releasedate = filter_var($data->releasedate, FILTER_SANITIZE_STRING);
-            $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
-            $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
-            
-            $movie = updateMovie($id, $data->title, $data->releasedate, $data->plot, $data->runtime);
-            $message = ['code' => 200, 'message' => "Le film avec l'identifiant $id a bien été modifié"];
-            echo json_encode($message + $movie);
+        } 
+        if($id) {
+            $movie = getMovieById($id);
+            if($movie) {
+                $title = filter_var($data->title, FILTER_SANITIZE_STRING);
+                $releasedate = filter_var($data->releasedate, FILTER_SANITIZE_STRING);
+                $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
+                $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
+                
+                $movie = updateMovie($id, $data->title, $data->releasedate, $data->plot, $data->runtime);
+                $message = ['code' => 200, 'message' => "Le film avec l'identifiant $id a bien été modifié"];
+                echo json_encode($message + $movie);
+            }else{
+                $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
+                http_response_code(404);
+                echo json_encode($error);
+            }
+        }else{
+            $error = ['code' => 400, 'message' => "Veuillez renseigner un identifiant"];
+            http_response_code(400);
+            echo json_encode($error);
         }
     break;
 

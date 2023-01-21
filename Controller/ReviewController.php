@@ -82,7 +82,7 @@ switch ($requestMethod) {
                     echo json_encode($error);
                     return;
                 }else{
-                    $review = updateReview($id, $data->movie_id, $data->username, $data->content, $data->date);
+                $review = updateReview($id, $data->movie_id, $data->username, $data->content, $data->date);
                 $message = ['code' => 200, 'message' => "L'article avec l'identifiant $id a été modifié"];
                 http_response_code(200);
                 echo json_encode($message + $review);
