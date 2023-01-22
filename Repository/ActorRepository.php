@@ -106,3 +106,18 @@ function getMoviesByActorId(int $id):array {
 
     return  $getMoviesByActorIdStmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function  getActorByFirstNameAndLastname ($firstname, $lastname):array {
+
+    require '../Service/Database.php';
+
+    $sql = "SELECT * FROM actors WHERE first_name = :firstname AND last_name = :lastname";
+
+    $getActorByFirstNameAndLastnameStmt = $db->prepare($sql);
+    $getActorByFirstNameAndLastnameStmt->execute([
+        'firstname' => $firstname,
+        'lastname' => $lastname
+    ]);
+
+    return  $getActorByFirstNameAndLastnameStmt->fetchAll(PDO::FETCH_ASSOC);
+}
