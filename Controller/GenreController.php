@@ -52,14 +52,30 @@ switch ($requestMethod) {
             echo json_encode($error);
         }else{
             $name = filter_var($data->name, FILTER_SANITIZE_STRING);
-            $genre = createGenre($data->name);
-            if(!$genre) {
-                $error = ['code' => 500, 'message' => "Une erreur est survenue lors de la création du genre"];
-                http_response_code(500);
+            $existingGenre = getGenreByName($name);
+            if($name === '') {
+                $error = ['code' => 400, 'message' => "Le champ 'name' est obligatoire"];
+                http_response_code(400);
                 echo json_encode($error);
+            }elseif($existingGenre){
+                $error = ['code' => 400, 'message' => "Le genre $name existe déjà"];
+                http_response_code(400);
+                echo json_encode($error);
+            }elseif(strlen($name)>25){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Le nom du genre ne doit pas dépasser 25 caractères'];
+                echo json_encode($error);
+            }else{
+                $message = ['code' => 201, 'message' => "Le genre $name a été correctement créé"];
+                $genre = createGenre($name);
+                http_response_code(201);
+                echo json_encode($genre + $message);
+                if(!$genre) {
+                    $error = ['code' => 500, 'message' => "Une erreur est survenue lors de la création du genre"];
+                    http_response_code(500);
+                    echo json_encode($error);
+                }
             }
-            http_response_code(201);
-            echo json_encode($genre);
         }
         break;
     case 'PUT':
@@ -73,11 +89,20 @@ switch ($requestMethod) {
             $genre = getGenreById($id);
             if($genre) {
                 $name = filter_var($data->name, FILTER_SANITIZE_STRING);
-
-                $genre = updateGenre($id, $data->name);
-                $message = ['code' => 200, 'message' => "Le genre numéro $id a été modifié"];
-                http_response_code(200);
-                echo json_encode($genre + $message);
+                if($name === '') {
+                    $error = ['code' => 400, 'message' => "Le champ 'name' est obligatoire"];
+                    http_response_code(400);
+                    echo json_encode($error);
+                }elseif(strlen($name)>25){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Le nom du genre ne doit pas dépasser 25 caractères'];
+                    echo json_encode($error);
+                }else{
+                    $genre = updateGenre($id, $name);
+                    $message = ['code' => 200, 'message' => "Le genre numéro $id a été modifié"];
+                    http_response_code(200);
+                    echo json_encode($genre + $message);
+                }
             }else{
                 $error = ['code' => 404, 'message' => "Le genre numéro $id n'existe pas"];
                 http_response_code(404);

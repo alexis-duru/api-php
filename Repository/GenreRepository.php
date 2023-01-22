@@ -102,3 +102,15 @@ function getMoviesByGenreId(int $id):array {
 
     return  $getMoviesByGenreIdStmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function  getGenreByName ( string $name ) : array  { 
+    require '../Service/Database.php';
+
+    $sql = "SELECT * FROM genres WHERE name = :name";
+
+    $getGenreByTitleStmt = $db->prepare($sql);
+    $getGenreByTitleStmt->bindParam(':name', $name);
+    $getGenreByTitleStmt->execute();
+
+    return  $getGenreByTitleStmt->fetchAll(PDO::FETCH_ASSOC);
+}
