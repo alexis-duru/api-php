@@ -113,9 +113,6 @@ switch ($requestMethod) {
                 }
 
             }
-            // $movie = createMovie($data->title, $data->releasedate, $data->plot, $data->runtime);
-            // http_response_code(201);
-            // echo json_encode($movie);
         }
         break;
             
@@ -135,12 +132,26 @@ switch ($requestMethod) {
                 $plot = filter_var($data->plot, FILTER_SANITIZE_STRING);
                 $runtime = filter_var($data->runtime, FILTER_SANITIZE_STRING);
                 $runtime = filter_var($data->runtime, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/")));
-
+                $existingMovie = getMovieByTitle($title);
                 if(strlen($releasedate)!==4){
                     http_response_code(400);
                     $error = ['error' => 400, 'message' => 'Veuillez renseigner une date de sortie valide'];
                     echo json_encode($error);
-                }elseif(!$runtime){
+                }elseif(strlen($plot)>250){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'La description ne doit pas dépasser 250 caractères'];
+                    echo json_encode($error);
+                }elseif($title === ""){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez renseigner un titre'];
+                    echo json_encode($error);
+                }
+                elseif($plot === ""){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez renseigner une description'];
+                    echo json_encode($error);
+                }
+                elseif(!$runtime){
                     http_response_code(400);
                     $error = ['error' => 400, 'message' => 'Veuillez renseigner une durée de film valide'];
                     echo json_encode($error);
@@ -150,7 +161,7 @@ switch ($requestMethod) {
                     echo json_encode($message + $movie);
                 }
             }else{
-                $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas" ,];
+                $error = ['code' => 404, 'message' => "Le film avec l'identifiant $id n'existe pas ou a déja été supprimé" ,];
                 http_response_code(404);
                 echo json_encode($error);
             }
