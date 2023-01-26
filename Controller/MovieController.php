@@ -87,13 +87,13 @@ switch ($requestMethod) {
                     http_response_code(400);
                     $error = ['error' => 400, 'message' => 'Veuillez renseigner une date de sortie valide'];
                     echo json_encode($error);
-                }elseif(strlen($plot)>250){
-                    http_response_code(400);
-                    $error = ['error' => 400, 'message' => 'La description ne doit pas dépasser 250 caractères'];
-                    echo json_encode($error);
                 }elseif($title === ""){
                     http_response_code(400);
                     $error = ['error' => 400, 'message' => 'Veuillez renseigner un titre'];
+                    echo json_encode($error);
+                }elseif(strlen($plot)>250){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'La description ne doit pas dépasser 250 caractères'];
                     echo json_encode($error);
                 }
                 elseif($plot === ""){
