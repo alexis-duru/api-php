@@ -106,3 +106,17 @@ function getMoviesByDirectorId(int $id):array {
 
     return  $getMoviesStmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function getDirectorByFirstNameAndLastName ($firstname, $lastname): array{
+    require '../Service/Database.php';
+
+    $sql = "SELECT * FROM directors WHERE first_name = :firstname AND last_name = :lastname";
+    $getDirectorStmt = $db->prepare($sql);
+    $getDirectorStmt->execute([
+        'firstname' => $firstname,
+        'lastname' => $lastname
+    ]);
+
+    return $getDirectorStmt->fetchAll(PDO::FETCH_ASSOC);
+}
+

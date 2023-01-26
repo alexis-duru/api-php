@@ -56,29 +56,55 @@ switch ($requestMethod) {
             $lastname = filter_var($data->lastname, FILTER_SANITIZE_STRING);
             $dob = filter_var($data->dob, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^\d{4}-\d{2}-\d{2}$/")));
             $bio = filter_var($data->bio, FILTER_SANITIZE_STRING);
-            // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $firstname)) {
-            //     http_response_code(400);
-            //     $error = ['error' => 400, 'message' => 'Le prénom ne doit contenir que des lettres'];
-            //     echo json_encode($error);
-            // }
-            // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $lastname)) {
-            //     http_response_code(400);
-            //     $error = ['error' => 400, 'message' => 'Le nom ne doit contenir que des lettres'];
-            //     echo json_encode($error);
-            // }
-            // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $bio)) {
-            //     http_response_code(400);
-            //     $error = ['error' => 400, 'message' => 'La biographie ne doit contenir que des lettres'];
-            //     echo json_encode($error);
-            // }
-            if(!$dob){
+            $existingActor = getDirectorByFirstnameAndLastname($firstname, $lastname);
+            if($existingActor) {
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Ce réalisateur existe déjà'];
+                echo json_encode($error);
+            }elseif($firstname === ""){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Veuillez entrer un prénom'];
+                echo json_encode($error);
+            }elseif($lastname === ""){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Veuillez entrer un nom de famille'];
+                echo json_encode($error);
+            }
+            elseif(strlen($firstname)>25){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Le prénom ne doit pas dépasser 25 caractères'];
+                echo json_encode($error);
+            }elseif(strlen($lastname)>25){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Le nom de famille ne doit pas dépasser 25 caractères'];
+                echo json_encode($error);
+            }elseif(!$dob){
                 http_response_code(400);
                 $error = ['error' => 400, 'message' => 'Veuillez entrer une date de naissance valide (yyyy-mm-dd)'];
                 echo json_encode($error);
+            }elseif($bio === ""){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Veuillez entrer une biographie'];
+                echo json_encode($error);
+            }elseif(strlen($bio)>250){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'La biographie ne doit pas dépasser 250 caractères'];
+                echo json_encode($error);
+            }
+            elseif(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $firstname)) {
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Le prénom ne doit contenir que des lettres'];
+                echo json_encode($error);
+            }
+            elseif(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $lastname)) {
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => 'Le nom ne doit contenir que des lettres'];
+                echo json_encode($error);
             }else{
+                $message = ['code' => 201, 'message' => "Le directeur $firstname $lastname a été correctement ajouté"];
                 $director = createDirector($firstname, $lastname, $dob, $bio);
                 http_response_code(201);
-                echo json_encode($director);
+                echo json_encode($actor + $message);
             }
         }
         break;
@@ -96,30 +122,50 @@ switch ($requestMethod) {
                 $lastname = filter_var($data->lastname, FILTER_SANITIZE_STRING);
                 $dob = filter_var($data->dob, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^\d{4}-\d{2}-\d{2}$/")));
                 $bio = filter_var($data->bio, FILTER_SANITIZE_STRING);
-                // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $firstname)) {
-                //     http_response_code(400);
-                //     $error = ['error' => 400, 'message' => 'Le prénom ne doit contenir que des lettres'];
-                //     echo json_encode($error);
-                // }
-                // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $lastname)) {
-                //     http_response_code(400);
-                //     $error = ['error' => 400, 'message' => 'Le nom ne doit contenir que des lettres'];
-                //     echo json_encode($error);
-                // }
-                // if(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $bio)) {
-                //     http_response_code(400);
-                //     $error = ['error' => 400, 'message' => 'La biographie ne doit contenir que des lettres'];
-                //     echo json_encode($error);
-                // }
-                if(!$dob){
+                if($firstname === ""){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez entrer un prénom'];
+                    echo json_encode($error);
+                }elseif($lastname === ""){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez entrer un nom de famille'];
+                    echo json_encode($error);
+                }
+                elseif(strlen($firstname)>25){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Le prénom ne doit pas dépasser 25 caractères'];
+                    echo json_encode($error);
+                }elseif(strlen($lastname)>25){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Le nom de famille ne doit pas dépasser 25 caractères'];
+                    echo json_encode($error);
+                }elseif(!$dob){
                     http_response_code(400);
                     $error = ['error' => 400, 'message' => 'Veuillez entrer une date de naissance valide (yyyy-mm-dd)'];
                     echo json_encode($error);
+                }elseif($bio === ""){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Veuillez entrer une biographie'];
+                    echo json_encode($error);
+                }elseif(strlen($bio)>250){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'La biographie ne doit pas dépasser 250 caractères'];
+                    echo json_encode($error);
+                }
+                elseif(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $firstname)) {
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Le prénom ne doit contenir que des lettres'];
+                    echo json_encode($error);
+                }
+                elseif(!preg_match("/^[a-zA-ZÀ-ÿ\s-]+$/", $lastname)) {
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => 'Le nom ne doit contenir que des lettres'];
+                    echo json_encode($error);
                 }else{
-                    $director = updateDirector($id, $data->firstname, $data->lastname, $data->dob, $data->bio);
-                    $message = ['code' => 200, 'message' => "Le réalisateur avec l'identifiant $id a bien été modifié" ,];
+                    $message = ['code' => 200, 'message' => "Le réalisateur $firstname $lastname a été modifié"];
+                    $director = updateDirector($id, $firstname, $lastname, $dob, $bio);
                     http_response_code(200);
-                    echo json_encode($message + $director);
+                    echo json_encode($director + $message);
                 }
             }else{
                 $error = ['code' => 404, 'message' => "Le réalisateur avec l'identifiant $id n'existe pas" ,];
