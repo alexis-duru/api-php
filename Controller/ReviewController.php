@@ -1,6 +1,7 @@
 <?php 
 
 require_once '../Repository/ReviewRepository.php';
+require_once '../Repository/MovieRepository.php';
 
 header('Content-Type: application/json');
 
@@ -56,7 +57,18 @@ switch ($requestMethod) {
             $content = filter_var($data->content, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9]{3,}$/")));
             $content = filter_var($data->content, FILTER_SANITIZE_STRING);
             $date = filter_var($data->date, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^\d{4}-\d{2}-\d{2}$/")));
-            if($username === ""){
+            $movieExist = getMovieById($data->movie_id);
+            if(!$movieExist){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => "Le film avec l'identifiant $data->movie_id n'existe pas"];
+                echo json_encode($error);
+            }
+            elseif(!is_int($data->movie_id)){
+                http_response_code(400);
+                $error = ['error' => 400, 'message' => "L'identifiant du film doit être un entier"];
+                echo json_encode($error);
+            }
+            elseif($username === ""){
                 http_response_code(400);
                 $error = ['error' => 400, 'message' => "Veuillez entrer un nom d'utilisateur"];
                 echo json_encode($error);
@@ -99,7 +111,18 @@ switch ($requestMethod) {
                 $username = filter_var($data->username, FILTER_SANITIZE_STRING);
                 $content = filter_var($data->content, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9]{3,}$/")));
                 $content = filter_var($data->content, FILTER_SANITIZE_STRING);
-                if($username === ""){
+                $movieExist = getMovieById($data->movie_id);
+                if(!$movieExist){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => "Le film avec l'identifiant $data->movie_id n'existe pas"];
+                    echo json_encode($error);
+                }
+                elseif(!is_int($data->movie_id)){
+                    http_response_code(400);
+                    $error = ['error' => 400, 'message' => "L'identifiant du film doit être un entier"];
+                    echo json_encode($error);
+                }
+                elseif($username === ""){
                     http_response_code(400);
                     $error = ['error' => 400, 'message' => "Veuillez entrer un nom d'utilisateur"];
                     echo json_encode($error);
