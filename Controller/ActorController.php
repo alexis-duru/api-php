@@ -67,11 +67,11 @@ switch ($requestMethod) {
             }
             elseif(strlen($firstname)>25){
                 http_response_code(400);
-                $error = ['error' => 400, 'message' => 'Le prénom ne doit pas dépasser 250 caractères'];
+                $error = ['error' => 400, 'message' => 'Le prénom ne doit pas dépasser 25 caractères'];
                 echo json_encode($error);
             }elseif(strlen($lastname)>25){
                 http_response_code(400);
-                $error = ['error' => 400, 'message' => 'Le nom de famille ne doit pas dépasser 250 caractères'];
+                $error = ['error' => 400, 'message' => 'Le nom de famille ne doit pas dépasser 25 caractères'];
                 echo json_encode($error);
             }elseif(!$dob){
                 http_response_code(400);
@@ -128,11 +128,11 @@ switch ($requestMethod) {
                 }
                 elseif(strlen($firstname)>25){
                     http_response_code(400);
-                    $error = ['error' => 400, 'message' => 'Le prénom ne doit pas dépasser 250 caractères'];
+                    $error = ['error' => 400, 'message' => 'Le prénom ne doit pas dépasser 25 caractères'];
                     echo json_encode($error);
                 }elseif(strlen($lastname)>25){
                     http_response_code(400);
-                    $error = ['error' => 400, 'message' => 'Le nom de famille ne doit pas dépasser 250 caractères'];
+                    $error = ['error' => 400, 'message' => 'Le nom de famille ne doit pas dépasser 25 caractères'];
                     echo json_encode($error);
                 }elseif(!$dob){
                     http_response_code(400);
