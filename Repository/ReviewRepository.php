@@ -86,4 +86,17 @@ function getReviewsByMovieId(int $id):array {
 
     return  $getReviewsStmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function getReviewsByUsernamedOnMovieId (int $id, string $username):array {
+    require '../Service/Database.php';
+
+    $sql = "SELECT reviews.id, reviews.movie_id, reviews.username, reviews.content, reviews.date FROM reviews JOIN movies ON movies.id = reviews.movie_id WHERE movies.id = :id AND reviews.username = :username ORDER BY reviews.date DESC";
+
+    $getReviewsStmt = $db->prepare($sql);
+    $getReviewsStmt->bindParam(':id', $id);
+    $getReviewsStmt->bindParam(':username', $username);
+    $getReviewsStmt->execute();
+
+    return  $getReviewsStmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
