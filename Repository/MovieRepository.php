@@ -76,11 +76,11 @@ function deleteMovie(int $id){
     ]);
 }
 
-function getMovieByTitle(string $title):array {
+function getMovieByTitle (string $title):array {
 
     require '../Service/Database.php';
     
-    $sql = "SELECT * FROM movies WHERE title LIKE :title";
+    $sql = "SELECT * FROM movies WHERE title = :title";
     
     $getMovieStmt = $db->prepare($sql);
     $getMovieStmt->bindParam(':title', $title);
